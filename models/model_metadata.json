@@ -1,14 +1,7 @@
 {
   "model_name": "credit-card-fraud-detector",
-  "model_version": "baseline-1",
-  "artifact_type": "preprocessor.pkl + xgb_classifier.json",
-  "threshold": 0.5,
-  "threshold_note": "0.50 matches the notebook deployment artifact test cells. 0.40 was selected in a separate threshold analysis and must be validated against the exported artifact before use.",
-  "training_library_versions": {
-    "scikit-learn": "1.6.1",
-    "xgboost": "3.4.1",
-    "imbalanced-learn": "0.14.2"
-  },
+  "model_version": "1.0.0",
+  "threshold": 0.7000000000000002,
   "features": [
     "transaction_id",
     "amount",
@@ -20,9 +13,20 @@
     "velocity_last_24h",
     "cardholder_age"
   ],
-  "created_from": "Existing uploaded project artifacts; no model retraining performed during deployment preparation.",
+  "metrics": {
+    "test_precision": 0.7931034482758621,
+    "test_recall": 0.7666666666666667,
+    "test_f1": 0.7796610169491526,
+    "test_roc_auc": 0.9982233502538072,
+    "test_pr_auc": 0.918036067764831,
+    "selected_threshold": 0.7000000000000002
+  },
   "artifact_sha256": {
     "preprocessor.pkl": "9ceeca047f3bfbff4fe23b5b549da791559bd840953e9d1991578b744e9895e0",
-    "xgb_classifier.json": "901d6d1be47d4de2e93f5b49def1d1d758110abd3a90938dc3d3a343d9bf3fb0"
+    "xgb_classifier.json": "fbc2e630a85c195673ddb541b74dbe00bfcd8a4258ebb1512da5cbec8c42ef14"
+  },
+  "training_versions": {
+    "scikit_learn": "1.6.1",
+    "xgboost": "3.4.1"
   }
 }

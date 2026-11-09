@@ -156,7 +156,11 @@ def main():
         mlflow.log_param("threshold_selection", "validation_max_f1")
         mlflow.log_metrics(metrics)
         mlflow.log_artifacts(str(model_dir), artifact_path="model_artifacts")
-        mlflow.sklearn.log_model(final_model, artifact_path="fraud_detection_pipeline")
+        mlflow.sklearn.log_model(
+    final_model,
+    artifact_path="fraud_detection_pipeline",
+    serialization_format="cloudpickle",
+)
 
     print(json.dumps(metrics, indent=2))
     print(f"Saved model artifacts in: {model_dir}")

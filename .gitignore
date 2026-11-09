@@ -25,3 +25,7 @@ data/
 .DS_Store
 Thumbs.db
 *.pyc
+# Local MLflow tracking database
+mlflow.db
+mlflow.db-shm
+mlflow.db-wal
