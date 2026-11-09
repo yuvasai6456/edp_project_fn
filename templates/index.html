@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Fraud Detector</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #f3f4f8;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4338ca;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 28px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #a5b4fc;
+            border-color: #6366f1;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        .prediction-result, .prediction-error {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .prediction-result {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+
+        .prediction-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        @media (max-width: 560px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <h1>Credit Card Fraud Detector</h1>
+        <p class="subtitle">
+            Enter transaction details to estimate fraud risk.
+        </p>
+
+        <form method="POST" action="/">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="transaction_id">Transaction ID</label>
+                    <input id="transaction_id" name="transaction_id"
+                           type="number" min="0" step="1" required>
+                </div>
+
+                <div class="field">
+                    <label for="amount">Amount</label>
+                    <input id="amount" name="amount"
+                           type="number" min="0" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label for="transaction_hour">Transaction Hour (0–23)</label>
+                    <input id="transaction_hour" name="transaction_hour"
+                           type="number" min="0" max="23" required>
+                </div>
+
+                <div class="field">
+                    <label for="merchant_category">Merchant Category</label>
+                    <input id="merchant_category" name="merchant_category"
+                           type="text" placeholder="Use a category from your dataset"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label for="foreign_transaction">Foreign Transaction</label>
+                    <select id="foreign_transaction"
+                            name="foreign_transaction" required>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="location_mismatch">Location Mismatch</label>
+                    <select id="location_mismatch"
+                            name="location_mismatch" required>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="device_trust_score">Device Trust Score (0–100)</label>
+                    <input id="device_trust_score" name="device_trust_score"
+                           type="number" min="0" max="100" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label for="velocity_last_24h">
+                        Transactions in Last 24 Hours
+                    </label>
+                    <input id="velocity_last_24h" name="velocity_last_24h"
+                           type="number" min="0" required>
+                </div>
+
+                <div class="field full-width">
+                    <label for="cardholder_age">Cardholder Age</label>
+                    <input id="cardholder_age" name="cardholder_age"
+                           type="number" min="18" max="120" required>
+                </div>
+
+                <div class="full-width">
+                    <button type="submit">Analyze Transaction</button>
+                </div>
+
+            </div>
+        </form>
+
+        {% if result %}
+        <section class="prediction-result">
+            <h2>Prediction Result</h2>
+            <h3>Model Prediction: {{ result.prediction | upper }}</h3>
+            <p>
+                Estimated fraud probability:
+                <strong>{{ "%.2f"|format(result.fraud_probability_pct) }}%</strong>
+            </p>
+        </section>
+        {% endif %}
+
+        {% if error %}
+        <section class="prediction-error">
+            <h3>Prediction Error</h3>
+            <p>{{ error }}</p>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>
